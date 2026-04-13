@@ -8,13 +8,28 @@ References:
         YouTube, 4 Nov. 2014, https://www.youtube.com/watch?v=oOcTVTpUsPQ.
 """
 
+import random
+import sympy
+
+KEY_SIZE = 1024
+PUBLIC_EXPONENT = 65537
+
 def generate_keys():
     """
     Generates RSA public and private key pairs.
 
     :return: Tuple of ((e, n), (d, n)) representing (public_key, private_key)
     """
-    pass
+    p = sympy.randprime(2 ** (KEY_SIZE // 2 - 1), 2 ** (KEY_SIZE // 2))
+    q = sympy.randprime(2 ** (KEY_SIZE // 2 - 1), 2 ** (KEY_SIZE // 2))
+
+    n = p * q
+    phi = (p - 1) * (q - 1)
+
+    e = PUBLIC_EXPONENT
+    d = pow(e, -1, phi)
+
+    return (e, n), (d, n)
 
 def encrypt(message, public_key):
     """
@@ -38,4 +53,6 @@ def decrypt(ciphertext, private_key):
 
 
 if __name__ == "__main__":
-    pass
+    print("Generating RSA keys...")
+    public_key, private_key = generate_keys()
+    print("Keys generated.\n")
