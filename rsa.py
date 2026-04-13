@@ -39,7 +39,13 @@ def encrypt(message, public_key):
     :param: Tuple of (e, n)
     :return: Encrypted message as an integer
     """
-    pass
+    e, n = public_key
+    message_int = int.from_bytes(message.encode(), 'big')
+
+    if message_int >= n:
+        raise ValueError("Message too long for the current key size.")
+
+    return pow(message_int, e, n)
 
 def decrypt(ciphertext, private_key):
     """
@@ -56,3 +62,13 @@ if __name__ == "__main__":
     print("Generating RSA keys...")
     public_key, private_key = generate_keys()
     print("Keys generated.\n")
+
+    choice = input("Would you like to (e)ncrypt or (d)ecrypt? ").lower()
+
+    while choice not in ['e', 'd']:
+        choice = input("Invalid choice. Please enter 'e' or 'd': ").lower()
+
+    if choice == 'e':
+        message = input("Enter message: ")
+        ciphertext = encrypt(message, public_key)
+        print(f"Encrypted (integer): {ciphertext}")
