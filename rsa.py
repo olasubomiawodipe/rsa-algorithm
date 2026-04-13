@@ -55,7 +55,11 @@ def decrypt(ciphertext, private_key):
     :param: Tuple of (d, n)
     :return: Decrypted plaintext message
     """
-    pass
+    d, n = private_key
+    message_int = pow(ciphertext, d, n)
+
+    byte_length = (message_int.bit_length() + 7) // 8
+    return message_int.to_bytes(byte_length, 'big').decode()
 
 
 if __name__ == "__main__":
@@ -63,12 +67,10 @@ if __name__ == "__main__":
     public_key, private_key = generate_keys()
     print("Keys generated.\n")
 
-    choice = input("Would you like to (e)ncrypt or (d)ecrypt? ").lower()
+    message = input("Enter message: ")
+    ciphertext = encrypt(message, public_key)
+    print(f"Encrypted (integer): {ciphertext}")
 
-    while choice not in ['e', 'd']:
-        choice = input("Invalid choice. Please enter 'e' or 'd': ").lower()
-
-    if choice == 'e':
-        message = input("Enter message: ")
-        ciphertext = encrypt(message, public_key)
-        print(f"Encrypted (integer): {ciphertext}")
+    raw = input("Enter encrypted integer: ")
+    ciphertext = int(raw)
+    print(f"Decrypted: {decrypt(ciphertext, private_key)}")
